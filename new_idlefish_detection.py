@@ -18,18 +18,16 @@ import os
 import re
 
 import pymongo
+import sys
 
 from threading import Timer
 
-min_price = 1000
-max_price = 4000
-max_wanted = 10
-search_keyword = 'iphone'
-default_info = {'memory': 0, 'age': '全新', 'note': ''} 
-# age 全新，9成新，较旧，战损，
-# memory: 0，16，32，64，128，256，512
+# os.chdir(os.path.split(os.path.realpath(__file__))[0])
+# print('current work dir:' + os.getcwd())
+sys.path.append(os.getcwd())
+from user_config import *
 
-history_fish = [['title', 'location']] * 10 # 保留最近10个浏览历史
+
 
 ################################################333
 def cancelUpdate():
@@ -42,34 +40,37 @@ def cancelUpdate():
 ###############################################3
 
 def goSearchPage():
+    print('goSearchPage')
+    new_fish = poco("com.taobao.idlefish:id/tab_post_icon")
+    credit = poco(text='信用')
+    history_search = poco(text="历史搜索")
+    
+    res = poco.wait_for_any([new_fish, credit, history_search])
+    
+    
     # 在搜索结果页面
-    if(poco(text='信用').exists()):
+    if(credit.exists()):
         print('进入搜索结果页面')
     #     ly = poco('android:id/content').child("android.widget.FrameLayout").("android.widget.FrameLayout")
         keyevent("BACK")
         poco(text='搜索').wait_for_appearance()
-        
         poco("android.widget.EditText").click()
         sleep(1)
-        #touch((0.783333333, 0.06875))
-        wait(Template(r"tpl1611932234510.png", record_pos=(0.26, -0.736), resolution=(492, 902)))
-        #driver.back()
-
-        poco("android.widget.ImageView").click()
+        #poco("android.widget.ImageView").click()
 
 
     # 在搜索页面    
-    elif(poco(text='搜索').exists()):
+    elif(history_search.exists()):
         print('进入搜索页面')
         poco("android.widget.EditText").click()
         sleep(1)
-        poco("android.widget.ImageView").click()
+        #poco("android.widget.ImageView").click()
     
     #     keyevent('BACK')
     #     sleep(1)
 
     #在主页面
-    else:
+    elif(new_fish.exists()):
         # 等待到达桌面
         poco(text='闲鱼').wait_for_appearance()
         poco(text='会玩').wait_for_appearance()
@@ -79,7 +80,9 @@ def goSearchPage():
         print('进入闲鱼主界面')
 
         # 进入搜索界面
-        poco('com.taobao.idlefish:id/bar_text').click()
+        poco(text='闲鱼').click()
+        poco("com.taobao.idlefish:id/tx_id").wait_for_appearance()
+        poco("com.taobao.idlefish:id/tx_id").click()
         poco(text='搜索').wait_for_appearance()
         
 ###############################################3
@@ -180,6 +183,41 @@ def getFishSnapShot(pos, size):
     #     f.write(img_data)
     #     f.close()
     return img_name
+
+###############################################
+
+def filterFish(fish_info):
+    title = fish_info['title']
+    price = fish_info['price']
+    wanted = fish_info['wanted']
+    location = fish_info['location']
+    # 屏蔽关键字
+    block = False
+    for w in block_keywords:
+        if(title.upper().find(w.upper()) > -1):
+            block = True
+            print('屏蔽关键字:' + w)
+            break
+    if(block):
+        return True
+    if(price > max_price or price < min_price):
+        print('价格超出范围 : ' + str(price))
+        return True
+    if(wanted > max_wanted):
+        print('想要的人太多:' + str(wanted))
+        return True
+    # 最近浏览过
+    if([title, location] in history_fish):
+        print('最近浏览过')
+        return True
+    else:
+        history_fish.pop(0)
+        history_fish.append([title, location])
+
+
+def viewFishPage(fish):
+    fish.click()
+
     
         
 ###############################################3
@@ -199,88 +237,88 @@ def getFishDetail(views):
             fish_info = {}
             title = ary[0]
             price = int(ary[2])
-            if(price < min_price or price > max_price):
-                print('价格超出范围 : ' + str(price))
-                continue
-                
+
+            # 热门
             if(ary[3].find('人想要') > -1):
                 wanted = int(re.findall('\d+', ary[3])[0])
                 location = ary[4]
             else:
                 wanted = 0
                 location = ary[3]
-            if([title, location] in history_fish):
-                pass # 浏览历史有则跳过
-                print('最近浏览过')
-            elif(wanted > max_wanted):
-                pass
-                print('想要的人太多:' + str(wanted))
-            else:
-                history_fish.pop(0)
-                history_fish.append([title, location])
-                # 进入fish页面
-                i.click()
+
+            #过滤
+            if(filterFish({'title':title, 'price':price, 'wanted':wanted, 'location':location})):
+                continue
+
+            # 进入fish页面
+            i.click()
+            poco(text="收藏").wait_for_appearance() 
+            views = poco("android.widget.ScrollView").child("android.view.View")
+            views = [i for i in views]
+            if(not views[0].get_text()):
+                views.pop(0) # 第0个是视频,不需要，删掉
+            nickname = views[0].get_text().split('\n')[0]
+            #price = views[1].get_text()
+            detail = views[2].get_text() 
+            if(detail.find('支持验货担保') > -1 or detail.find('下单后逐一验货') > -1):
+                detail = views[3].get_text()
+
+            url_info = getFishUrl()
+            url_id = url_info['url_id']
+            fish_found = db_items.find_one({'url_id': url_id})
+
+            # 查看用户信息
+            user_info = {}
+            if(not fish_found):
+                views[0].click()
+                user_info = getUserInfo()
+                # 退回fish页面
+                keyevent('BACK')
                 poco(text="收藏").wait_for_appearance()
-                views = poco("android.widget.ScrollView").child("android.view.View")
-                views = [i for i in views]
-                if(not views[0].get_text()):
-                    views.pop(0) # 第0个是视频,不需要，删掉
-                nickname = views[0].get_text().split('\n')[0]
-                #price = views[1].get_text()
-                detail = views[2].get_text() 
-                if(detail.find('支持验货担保') > -1 or detail.find('下单后逐一验货') > -1):
-                    detail = views[3].get_text()
-
-                url_info = getFishUrl()
-                url_id = url_info['url_id']
-                fish_found = db_items.find_one({'url_id': url_id})
-
-                # 查看用户信息
-                user_info = {}
-                if(not fish_found):
-                    views[0].click()
-                    user_info = getUserInfo()
-                    # 退回fish页面
-                    keyevent('BACK')
-                    poco(text="收藏").wait_for_appearance()
-                else:
-                    print('池塘已有')
-                #退回搜索页面
+            else:
+                print('池塘已有')
+            #退回搜索页面
+            keyevent('BACK')
+            try:
+                poco(text='信用').wait_for_appearance()
+            except poco.exceptions.PocoTargetTimeout:
+                print('###############')
+                print('PocoTargetTimeout')
                 keyevent('BACK')
                 poco(text='信用').wait_for_appearance()
+            
+            img_info = {}
+            if(not fish_found):
+                sleep(2)
+                img_name = getFishSnapShot(i.attr('pos'), i.attr('size'))
+                img_info['img_name'] = img_name
                 
-                img_info = {}
-                if(not fish_found):
-                    sleep(2)
-                    img_name = getFishSnapShot(i.attr('pos'), i.attr('size'))
-                    img_info['img_name'] = img_name
-                    
-                    
-                fish_info.update(url_info)
-                fish_info.update(user_info)
-                fish_info['title'] = title
-                fish_info['price'] = price
-                fish_info['wanted'] = wanted
-                fish_info['location'] = location
-                fish_info['nickname'] = nickname
-                fish_info['detail'] = detail
-                fish_info['tag'] = [search_keyword]
-                fish_info['on_sale'] = True
-                #fish_info['img_name'] = img_name
-                fish_info.update(default_info)
-                fish_info.update(img_info)
                 
-                if( fish_found ): # 更新
-                    myquery = { "url_id": url_id }
-                    newvalues = { "$set": fish_info}
-                    res = db_items.update_one(myquery, newvalues)
-                    print(res)
-                else: # 创建
-                    res = db_items.insert_one(fish_info)
-                    print(res)
+            fish_info.update(url_info)
+            fish_info.update(user_info)
+            fish_info['title'] = title
+            fish_info['price'] = price
+            fish_info['wanted'] = wanted
+            fish_info['location'] = location
+            fish_info['nickname'] = nickname
+            fish_info['detail'] = detail
+            fish_info['tag'] = [search_keyword]
+            fish_info['on_sale'] = True
+            #fish_info['img_name'] = img_name
+            fish_info.update(default_info)
+            fish_info.update(img_info)
+            
+            if( fish_found ): # 更新
+                myquery = { "url_id": url_id }
+                newvalues = { "$set": fish_info}
+                res = db_items.update_one(myquery, newvalues)
+                print(res)
+            else: # 创建
+                res = db_items.insert_one(fish_info)
+                print(res)
 
-                print(fish_info)
-                sleep(1)
+            print(fish_info)
+            sleep(1)
             
 
 ###############################################3
@@ -313,6 +351,7 @@ sleep(1)
 poco("android.widget.EditText").wait_for_appearance()
 # poco("android.widget.EditText").set_text('iphone8')
 # poco("android.widget.EditText").setattr('text', 'iphone8')
+print('search-keyword:' + search_keyword)
 text(search_keyword)
 sleep(1.0)
 poco(text='搜索').click()
@@ -359,6 +398,12 @@ while(1):
 # 搜索框内输入文本
 #poco('com.taobao.idlefish:id/search_term').set_text('iphone')
 # poco('com.taobao.idlefish:id/tx_id').set_text('iphone')
+
+
+
+
+
+
 
 
 
