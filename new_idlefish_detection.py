@@ -4,6 +4,9 @@ __author__ = "xing"
 from airtest.core.api import *
 from poco.drivers.android.uiautomation import AndroidUiautomationPoco
 from poco.exceptions import PocoNoSuchNodeException
+from poco.exceptions import PocoTargetTimeout
+
+
 #from cmd_utils import *
 
 import base64
@@ -225,9 +228,11 @@ def viewFishPage(fish):
 def getFishDetail(views):
     count = 0
     for i in views:
-        
         txt = i.get_text()
         if txt:
+            if(txt.find("闲鱼币 ") > -1):
+                print("block 闲鱼币")
+                continue
             count = count + 1
             print('count:' + str(count))
             if(count > 4):
@@ -239,12 +244,15 @@ def getFishDetail(views):
             price = int(ary[2])
 
             # 热门
-            if(ary[3].find('人想要') > -1):
-                wanted = int(re.findall('\d+', ary[3])[0])
-                location = ary[4]
-            else:
-                wanted = 0
-                location = ary[3]
+            wanted = 0
+            res = re.findall('(?<=[^\d])\d+(?=人想要)', txt)
+            location_id = 3
+            if(len(res) > 0):
+                wanted = int(res[0])
+                location_id += 1
+            if(ary[3][0] == '.'): #price有小数点
+                location_id += 1
+            location = ary[location_id]
 
             #过滤
             if(filterFish({'title':title, 'price':price, 'wanted':wanted, 'location':location})):
@@ -257,9 +265,13 @@ def getFishDetail(views):
             views = [i for i in views]
             if(not views[0].get_text()):
                 views.pop(0) # 第0个是视频,不需要，删掉
+            
             nickname = views[0].get_text().split('\n')[0]
             #price = views[1].get_text()
             detail = views[2].get_text() 
+            if(detail is None):
+                print('支持同城搬运')
+                detail = views[3].get_text() #支持同城搬运
             if(detail.find('支持验货担保') > -1 or detail.find('下单后逐一验货') > -1):
                 detail = views[3].get_text()
 
@@ -281,7 +293,7 @@ def getFishDetail(views):
             keyevent('BACK')
             try:
                 poco(text='信用').wait_for_appearance()
-            except poco.exceptions.PocoTargetTimeout:
+            except PocoTargetTimeout:
                 print('###############')
                 print('PocoTargetTimeout')
                 keyevent('BACK')
@@ -398,21 +410,6 @@ while(1):
 # 搜索框内输入文本
 #poco('com.taobao.idlefish:id/search_term').set_text('iphone')
 # poco('com.taobao.idlefish:id/tx_id').set_text('iphone')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

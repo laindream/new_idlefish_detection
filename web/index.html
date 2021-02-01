@@ -1,0 +1,189 @@
+
+<script src="./js/vue.js"></script>
+<script src="./js/jquery-3.5.1.js"></script>
+<script src="./js/qrcode.js"></script>
+<style>
+
+.line{
+    background:#E7E7E7;/*背景色为浅灰色*/
+   width:0.6px;/*设置宽高*/
+   height:45px;
+   position:relative;/*调整位置*/
+   left:150px;
+   float:left;/*让此div与前面的并排显示*/
+}
+
+table {
+    //border-style: solid dotted dashed double;
+    border-style: double;
+    width: 100%;
+}
+
+th {
+    text-align:left;
+}
+</style>
+
+
+
+    <div id="app">
+        {{ message }}
+        <button type="button" @click="prevPage">上一页</button>第{{page_num}}页 <button type="button" @click="nextPage">下一页</button>
+        <table v-for="fish in fish_list" border="1">
+
+            <tr>
+                <td><button type="button">屏蔽</button></td>
+                <th colspan="5">{{fish.title}}</th>
+            </tr>
+            <tr>
+                <td style="color:red; width:100px;">价格：{{fish.price}}</td> 
+                <td><button type="button" v-bind:nickname="fish.nickname" v-on:click="blockNickname">屏蔽</button> &nbsp;{{fish.nickname}} </td>
+                <td><button type="button">屏蔽</button> &nbsp;{{fish.user_id}} </td>
+                <td>{{fish.time}}</td>
+            </tr>
+            <tr>
+                <td><a v-bind:href="fish.fish_url"><img v-bind:src="fish.img_name" width="80px;"></a></td>
+                <th colspan="5" style="white-space: pre-line;">{{fish.detail}}</td>
+                <td style="width:100px;">
+                    <div v-bind:id="fish.url_id" ></div>
+                    <button type="button" v-bind:href="fish.fish_url" v-on:click="showQRCode" v-bind:url_id="fish.url_id">显示二维码</button>
+                </td>
+            </tr>
+            <tr><th colspan="5">&nbsp;</th></tr>
+            
+        </table>
+
+        <button type="button" @click="prevPage">上一页</button>第{{page_num}}页 <button type="button" @click="nextPage">下一页</button>
+    </div>
+
+
+
+<script>
+
+fish_detail = {
+    "_id": {
+        "$oid": "60153405492b650f7fa02c4e"
+    },
+    "title": "￼6p 指纹坏了，其他全好，特别新，用起来舒服，屏幕大，喜欢的 私聊",
+    "price": 580,
+    "wanted": 1,
+    "location": "12345",
+    "nickname": "爱你一身??",
+    "detail": "6p 指纹坏了，其他全好，特别新，用起来舒服，屏幕大，喜欢的私聊\n#含充电线",
+    "url_id": "http://634736113709.com",
+    "user_id": " dengqinpoa",
+    "img_name": "img/1.png",
+    "tag": ["iphone"]
+}
+
+fish_list = [fish_detail, fish_detail, fish_detail]
+
+
+
+var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello Vue!',
+      fish_list: fish_list,
+      page_num: 0,
+    },
+    mounted: function () {
+        let that = this
+    // `this` 指向 vm 实例
+        //this.$options.getNewIdleFish()
+        that.getNewIdleFish()
+    },
+    methods:{
+        blockNickname: function (event){
+            //console.log(event)
+            nickname = event.target.attributes.nickname.value
+            console.log("block nickname:" + nickname)
+            $.ajax({
+                url: "/api/set_block_nickname/" + nickname,
+                success: function(data){
+                    console.log('set_block_nickname success!' + nickname)
+                }
+            })
+        },
+        showQRCode :function (event){
+            var id = event.target.attributes.url_id.value
+            var url = event.target.attributes.href.value
+            console.log("QRCode")
+            console.log(id)
+            
+            if(typeof(event.target.qrcode) != "undefined"){
+                event.target.qrcode.clear()
+                var qrcode = event.target.qrcode
+            }
+            else{
+                var qrcode =new QRCode(document.getElementById(id), {
+                    text: "http://baidu.com",
+                    width: 100,
+                    height: 100,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            }
+            qrcode.clear();
+            console.log("QRCode")
+            console.log(url)
+            qrcode.makeCode(url);
+            event.target.qrcode = qrcode
+        },
+        getNewIdleFish: function (page_num = 0){
+            //let page_num = this.page_num
+            console.log(page_num)
+            console.log('get_new_idlefish')
+            $.ajax({ 
+                url: "/api/get_new_idlefish", 
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({"page_num": page_num}), //注意不能直接传obj对像.用JSON.stringify()
+                
+                dataType: "json",
+                success: function(data){
+                    console.log('get_new_idlefish success')
+                    console.log(data)
+                    // var obj = jQuery.parseJSON(data); //如果指定了dataType:“json”，返回的就是json对像
+                    var obj = data
+                    // console.log(obj)
+                    while(fish_list.length > 0){
+                        fish_list.pop();
+                    }
+                    for(i = 0; i < obj.length; i++){
+                        obj[i].img_name = 'img/' + obj[i].img_name 
+                        if(obj[i].detail.indexOf('\n') > -1){
+                            //obj[i].detail = "<p>" + obj[i].detail.replace('\n', '</p><p>') + "</p>"
+                        }
+                        
+                        //obj[i].url_id = "https://market.m.taobao.com/app/idleFish-F2e/widle-taobao-rax/page-detail?&id=" + obj[i].url_id 
+                        obj[i].fish_url = "https://market.m.taobao.com/app/idleFish-F2e/widle-taobao-rax/page-detail?&id=" + obj[i].url_id 
+                        //Fish-2021-01-30-182509-6513885.png
+                        var img_name = obj[i].img_name.substr(4, 24)
+                        var hour = img_name.substr(16, 2)
+                        var minute = img_name.substr(18, 2)
+                        var second = img_name.substr(20, 2)
+                        obj[i].time = img_name.substr(5, 10) + " " + hour + ":" + minute + ":" + second
+                        fish_list.push(obj[i])
+                    }
+                    
+                }
+            });
+        },
+        nextPage: function(){
+            this.page_num = this.page_num + 1
+            this.$options.methods.getNewIdleFish(this.page_num)
+        },
+        prevPage: function(){
+            if(this.page_num > 0){
+                this.page_num = this.page_num - 1
+                this.$options.methods.getNewIdleFish(this.page_num)
+            }
+        },
+    }
+})
+
+
+
+</script>
