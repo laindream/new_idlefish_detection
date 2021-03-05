@@ -120,7 +120,7 @@ def getUserInfo():
             print('PocoNoSuchNodeException')
             pass
     print('user_credit : ' + credit)
-    return {"user_id":user_id}
+    return {"user_id":user_id, 'user_credit': credit}
 
 ###############################################3
 
@@ -151,16 +151,11 @@ def getFishUrl():
 ###################################################3
 # pos:中心点位置(x,y)
 # size: (width, height)
-def getFishSnapShot(pos, size):
+def getFishSnapShot(img_as_ary, pos, size):
 
-    res = poco.snapshot()
-    img_data = base64.b64decode(res[0])
-
-    ff = io.BytesIO(img_data)
-    img = image.imread(ff, res[1])
     # img2 = Image.open(ff)
     # img2.show()
-    shape = img.shape
+    shape = img_as_ary.shape
     screen_h = shape[0]
     screen_w = shape[1]
 
@@ -173,7 +168,7 @@ def getFishSnapShot(pos, size):
     item_begin_y = pos_y - item_h//2 - 1
     item_end_x = item_begin_x + item_w + 2
     item_end_y = item_begin_y + item_h + 2
-    img2 = img[item_begin_y:item_end_y, item_begin_x:item_end_x, :]
+    img2 = img_as_ary[item_begin_y:item_end_y, item_begin_x:item_end_x, :]
     #plt.axis('off')
     #plt.imshow(img2)
     #img_name = str(uuid.uuid1()) + ".png"
@@ -222,10 +217,21 @@ def viewFishPage(fish):
     fish.click()
 
     
+# 从fish页返回
+def backtoSearchResultPage():
+    keyevent('BACK')
+    try:
+        poco(text='信用').wait_for_appearance()
+        sleep(1)
+    except PocoTargetTimeout:
+        print('###############')
+        print('PocoTargetTimeout')
+        keyevent('BACK')
+        poco(text='信用').wait_for_appearance()
         
 ###############################################3
 
-def getFishDetail(views):
+def getFishDetail(views, img_as_ary):
     count = 0
     for i in views:
         txt = i.get_text()
@@ -267,6 +273,13 @@ def getFishDetail(views):
                 views.pop(0) # 第0个是视频,不需要，删掉
             
             nickname = views[0].get_text().split('\n')[0]
+            if(nickname in block_nickname_list):
+                print('nickname %s 被屏蔽!'%nickname)
+                #退回搜索页面
+                backtoSearchResultPage()
+                continue
+
+
             #price = views[1].get_text()
             detail = views[2].get_text() 
             if(detail is None):
@@ -275,6 +288,14 @@ def getFishDetail(views):
             if(detail.find('支持验货担保') > -1 or detail.find('下单后逐一验货') > -1):
                 detail = views[3].get_text()
 
+            # nickname和detail过滤
+            res = db_items.find_one({'nickname': nickname, 'detail':detail})
+            if(res):
+                print('nickname and detail exist:' + nickname + " \n" + detail)
+                backtoSearchResultPage()
+                continue
+
+            
             url_info = getFishUrl()
             url_id = url_info['url_id']
             fish_found = db_items.find_one({'url_id': url_id})
@@ -289,20 +310,10 @@ def getFishDetail(views):
                 poco(text="收藏").wait_for_appearance()
             else:
                 print('池塘已有')
-            #退回搜索页面
-            keyevent('BACK')
-            try:
-                poco(text='信用').wait_for_appearance()
-            except PocoTargetTimeout:
-                print('###############')
-                print('PocoTargetTimeout')
-                keyevent('BACK')
-                poco(text='信用').wait_for_appearance()
             
             img_info = {}
             if(not fish_found):
-                sleep(2)
-                img_name = getFishSnapShot(i.attr('pos'), i.attr('size'))
+                img_name = getFishSnapShot(img_as_ary, i.attr('pos'), i.attr('size'))
                 img_info['img_name'] = img_name
                 
                 
@@ -330,6 +341,7 @@ def getFishDetail(views):
                 print(res)
 
             print(fish_info)
+            backtoSearchResultPage()
             sleep(1)
             
 
@@ -341,6 +353,13 @@ mongoClient = pymongo.MongoClient('mongodb://localhost:27017')
 
 mydb = mongoClient['idle_fish']
 db_items = mydb['fish']
+block_nickname = mydb['block_nickname']
+# block_nickname
+res = block_nickname.find({}, {"_id":0,'nickname': 1})
+block_nickname_list = [i['nickname'] for i in res]
+for i in range(min(5, len(block_nickname_list))):
+    print("block nickname:%s"% block_nickname_list[i])
+
 #items.create_index([("url_id", pymongo.DESCENDING)], unique = True)
 # item = {'url_id':1234, 'title':"iphone8"}
 # x = db_items.insert_one(item)
@@ -398,7 +417,15 @@ while(1):
     poco("android.widget.ScrollView").wait_for_appearance()
     views = poco("android.widget.ScrollView").offspring("android.view.View")
 
-    getFishDetail(views)
+    #获取屏幕截图
+    sleep(1)
+    res = poco.snapshot() #返回data和img type(jpg or png)
+    img_data = base64.b64decode(res[0])
+    ff = io.BytesIO(img_data)
+    img_as_ary = image.imread(ff, res[1])
+    sleep(1)
+
+    getFishDetail(views, img_as_ary)
     
     wait_time = 10
     for i in range(wait_time, 0, -1):
@@ -410,6 +437,10 @@ while(1):
 # 搜索框内输入文本
 #poco('com.taobao.idlefish:id/search_term').set_text('iphone')
 # poco('com.taobao.idlefish:id/tx_id').set_text('iphone')
+
+
+
+
 
 
 

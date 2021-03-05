@@ -1,0 +1,79 @@
+"api": "mtop.taobao.idle.user.headinfo.get",
+    "data": {
+        "backGroundImage": "http://gw.alicdn.com/tps/TB1w3jnMVXXXXctXFXXXXXXXXXX-750-360.png",
+        "blackHouseWarnTitle": "确定将TA从你管理的所有鱼塘移出？",
+        "feedContent": "收到评价48条",
+        "feedNum": 48,
+        "follow": 1,
+        "goh5": false,
+        "goodFeedNum": 31,
+        "hasFeedNum": true,
+        "homeCard": {
+            "cardData": {
+                "dtn": "新鲜",
+                "list": [
+                    {
+                        "mtopApi": "mtop.taobao.idle.mypublic.list",
+                        "mtopParameter": {},
+                        "name": "宝贝 49",
+                        "trackCtrlName": "Button-TabRelease",
+                        "trackParams": {
+                            "trackCtrlName": "Button-TabRelease"
+                        },
+                        "version": "2.0"
+                    },
+                    {
+                        "mtopApi": "mtop.tmall.flipped.fish.user.profile.mypost.fetch",
+                        "mtopParameter": {},
+                        "name": "帖子 0",
+                        "trackCtrlName": "Button-TabRate",
+                        "trackParams": {
+                            "trackCtrlName": "Button-TabRate"
+                        },
+                        "version": "1.0"
+                    },
+                    {
+                        "mtopApi": "mtop.taobao.idle.rate.list",
+                        "mtopParameter": {},
+                        "name": "评价 48",
+                        "trackCtrlName": "Button-TabRate",
+                        "trackParams": {
+                            "trackCtrlName": "Button-TabRate"
+                        },
+                        "version": "2.0"
+                    },
+                    {
+                        "mtopApi": "mtop.taobao.idle.user.encrypted.action.get",
+                        "mtopParameter": {},
+                        "name": "动态 194",
+                        "trackCtrlName": "Button-TabMine",
+                        "trackParams": {
+                            "trackCtrlName": "Button-TabMine"
+                        },
+                        "version": "2.0"
+                    }
+                ],
+                "tabTop": false
+            },
+            "cardType": 1053
+        },
+        "idlePoolNum": 0,
+        "idleUserId": 0,
+        "infoCompleted": 0,
+        "infoPercent": 0,
+        "isBeFollowed": false,
+        "isInMyBlackList": false,
+        "isPlayboy": false,
+        "isProPlayer": false,
+        "loginNote": "12分钟前来过闲鱼",
+        "menus": [],
+        "myAttentionNum": 3,
+        "myAttentionNumFormat": "3",
+        "myFansNum": 11,
+        "myFansNumFormat": "11",
+        "needDecryptKeys": [
+            "nick",
+            "userId"
+        ],
+        "nick": "uLdsluCd18QY3tBf4G2/gg==",
+        "picFeedNum": 0,

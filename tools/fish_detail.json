@@ -1,0 +1,201 @@
+{
+    "api": "mtop.taobao.idle.awesome.detail",
+    "data": {
+        "buyerDO": {
+            "buyerId": "1884556551",
+            "isCollected": "false",
+            "isSuperFavored": "false"
+        },
+        "itemDO": {
+            "browseCnt": "44",
+            "categoryId": "50025387",
+            "charitableItem": "false",
+            "charitableTag": {
+                "iconHeight": "60",
+                "iconUrl": "http://gw.alicdn.com/mt/TB1FjjLdkcx_u4jSZFlXXXnUFXa-204-60.png",
+                "iconWidth": "204"
+            },
+            "defaultPicture": "false",
+            "defaultPrice": "false",
+            "desc": "全新未拆封，iphone12pro 256G 海蓝色，型号A2408。\n敲黑板强调：全新未拆封，售出不退不换！考虑清楚再拍！",
+            "favorCnt": "0",
+            "imageInfos": [
+                {
+                    "heightSize": "1920",
+                    "labels": [
+                        {
+                            "actionUrl": "https://market.m.taobao.com/app/idleFish-F2e/app-channels/search_set?wh_weex=true&tagCode=0&tagName=%E5%85%A8%E6%96%B0%E6%9C%AA%E6%8B%86%E5%B0%81&reqFrom=DETAIL_ITEMTAG&bizType=customTag&condition=%7B%22itemId%22%3A%22638558507216%22%2C%22channelCategory%22%3A%22126856279%22%7D",
+                            "left": "1.0",
+                            "lid": "0",
+                            "orientation": "1",
+                            "text": "全新未拆封",
+                            "top": "0.4931003"
+                        }
+                    ],
+                    "major": "true",
+                    "type": "0",
+                    "url": "http://img.alicdn.com/bao/uploaded/i3/O1CN01WP3a9d1zTWEyZzLpT_!!0-fleamarket.jpg",
+                    "videoId": "0",
+                    "widthSize": "1326"
+                },
+                {
+                    "heightSize": "1920",
+                    "major": "false",
+                    "type": "0",
+                    "url": "http://img.alicdn.com/bao/uploaded/i1/O1CN01DxsGFM1zTWF2hykN6_!!0-fleamarket.jpg",
+                    "videoId": "0",
+                    "widthSize": "1313"
+                },
+                {
+                    "heightSize": "1051",
+                    "major": "false",
+                    "type": "0",
+                    "url": "http://img.alicdn.com/bao/uploaded/i2/O1CN01AQYvEq1zTWExbr29h_!!0-fleamarket.jpg",
+                    "videoId": "0",
+                    "widthSize": "1919"
+                },
+                {
+                    "heightSize": "1659",
+                    "major": "false",
+                    "type": "0",
+                    "url": "http://img.alicdn.com/bao/uploaded/i2/O1CN01EawYWq1zTWF248T2S_!!0-fleamarket.jpg",
+                    "videoId": "0",
+                    "widthSize": "1920"
+                },
+                {
+                    "heightSize": "1024",
+                    "labels": [
+                        {
+                            "actionUrl": "https://market.m.taobao.com/app/idleFish-F2e/app-channels/search_set?wh_weex=true&tagCode=0&tagName=%E8%8B%B9%E6%9E%9C%E6%97%97%E8%88%B0%E5%BA%97%E5%94%AE%E4%BB%B7&reqFrom=DETAIL_ITEMTAG&bizType=customTag&condition=%7B%22itemId%22%3A%22638558507216%22%2C%22channelCategory%22%3A%22126856279%22%7D",
+                            "inputMode": "userinput",
+                            "labelType": "ugc",
+                            "left": "0.69722223",
+                            "lid": "0",
+                            "orientation": "1",
+                            "text": "苹果旗舰店售价",
+                            "top": "0.42256975"
+                        }
+                    ],
+                    "major": "false",
+                    "type": "0",
+                    "url": "http://img.alicdn.com/bao/uploaded/i2/O1CN01AzOKUI1zTWF2iswPE_!!0-fleamarket.jpg",
+                    "widthSize": "1080"
+                }
+            ],
+            "itemCatDTO": {
+                "catId": "50025387",
+                "channelCatId": "126856279",
+                "leafId": "34",
+                "sugShow": "true",
+                "tbCatId": "110215"
+            },
+            "itemId": "638558507216",
+            "itemStatus": "0",
+            "itemStatusStr": "在线",
+            "itemType": "detailCommonBuy",
+            "originalPrice": "0",
+            "priceUnit": "",
+            "quantity": "1",
+            "secuGuide": {
+                "secuBody": "https://gw.alicdn.com/mt/TB1V4Q9OVXXXXa7aXXXXXXXXXXX-488-430.png",
+                "secuBtm": "*闲置商品不支持7天无理由退货服务。请保证在闲鱼平台进行支付，否则闲鱼将无法保证您交易的安全。",
+                "secuBtmContext": "点击查看更多知识",
+                "secuBtmUrl": "https://ai.alimebot.taobao.com/intl/index.htm?from=mmcHJdQwpZ",
+                "secuContent": "担保交易",
+                "secuIcon": "https://gw.alicdn.com/tps/TB1xwS9MVXXXXbGXVXXXXXXXXXX-24-24.png",
+                "secuTitle": "什么是闲鱼支付宝担保交易？"
+            },
+            "simpleItem": "true",
+            "soldPrice": "8888",
+            "templateId": "19308303200",
+            "title": "全新未拆封，iphone12pro 256G 海蓝色，型号A",
+            "trackParams": {
+                "buyerBucketId": "0",
+                "itemId": "638558507216",
+                "sellerBucketId": "1",
+                "sellerId": "11016715"
+            },
+            "transportFee": "7.00",
+            "wantCnt": "2"
+        },
+        "needDecryptKeys": [
+            "sellerDO.nick",
+            "sellerDO.uniqueName"
+        ],
+        "sellerDO": {
+            "city": "杭州",
+            "identityTags": [
+                {
+                    "iconHeight": "32",
+                    "iconUrl": "https://gw.alicdn.com/bao/uploaded/TB1E3aKPFXXXXcKXpXXXXXXXXXX-32-32.png",
+                    "iconWidth": "32",
+                    "link": "https://h5.m.taobao.com/2shou/pd/realVerifyUrl.html?userId=11016715&isVerify=1",
+                    "text": "实人认证已通过",
+                    "trackParams": {
+                        "appearTrackName": "",
+                        "trackCtrlName": "Button-Shiren"
+                    },
+                    "type": "1"
+                },
+                {
+                    "iconHeight": "32",
+                    "iconUrl": "https://gw.alicdn.com/tfs/TB1DuVuB7P2gK0jSZPxXXacQpXa-32-32.png",
+                    "iconWidth": "32",
+                    "link": "fleamarket://personalPage?userid=11016715&ignore=false&userzhima=true&loginuserzhima=false",
+                    "text": "芝麻信用已授权",
+                    "trackParams": {
+                        "appearTrackName": "",
+                        "trackCtrlName": "Button-Zhima"
+                    },
+                    "type": "100"
+                }
+            ],
+            "lastVisitTime": "5分钟前来过",
+            "levelTags": [
+                {
+                    "iconHeight": "32.0",
+                    "iconUrl": "https://gw.alicdn.com/tfs/TB1nehXk4vbeK8jSZPfXXariXXa-240-48.png",
+                    "iconWidth": "160.0"
+                },
+                {
+                    "iconHeight": "28.0",
+                    "iconUrl": "https://gw.alicdn.com/tfs/TB1DM04aGWs3KVjSZFxXXaWUXXa-28-28.png",
+                    "iconWidth": "28.0"
+                }
+            ],
+            "nick": "KqOpYx0xtJkZUl1i/yNmIQ==",
+            "portraitUrl": "http://img.alicdn.com/sns_logo/TB1aIM.n9zqK1RjSZFjXXblCFXa-192-192.png",
+            "publishCity": "发布于杭州",
+            "sellerId": "11016715",
+            "uniqueName": "KqOpYx0xtJkZUl1i/yNmIQ==",
+            "xianyuSummary": "来闲鱼1757天了,卖出过78件宝贝。90后白羊座男生。",
+            "zhimaAuth": "true",
+            "zhimaLevelInfo": {
+                "levelCode": "A",
+                "levelName": "信用极好"
+            }
+        },
+        "serverTime": "2021-02-09 13:31:22",
+        "trackParams": {
+            "buyerBucketId": "0",
+            "buyerId": "1884556551",
+            "buyerInSellBucketId": "1",
+            "buyerInSellOptions": "simplePub|newTagPage|myPubSameSpu|toBuyB|spuGuide|itemGuide|tagV2|mtbFeeds|mtbSell|mtbHome|tobuyQuery|tobuyInitiative|glbV2|ignoreImageEditor|textSameSpu",
+            "buyerOptions": "newTagPage",
+            "categoryId": "50025387",
+            "detailRedirectPublishUrl": "fleamarket://want_buy_post?flutter=true&sourceId=bid_detail_button&spuItemId=638558507216&use_draft=false&desc=%E6%B1%82%E8%B4%AD%E5%85%A8%E6%96%B0%E6%8B%86%E5%B0%81iphone12pro256g",
+            "itemId": "638558507216",
+            "mainPic": "http://img.alicdn.com/bao/uploaded/i3/O1CN01WP3a9d1zTWEyZzLpT_!!0-fleamarket.jpg",
+            "policyType": "sellerGoodCount",
+            "sellerBucketId": "1",
+            "sellerId": "11016715",
+            "sellerInBuyBucketId": "14",
+            "sellerInBuyOptions": "newTagPage|newProdPrice",
+            "sellerOptions": "simplePub|newTagPage|myPubSameSpu|toBuyB|spuGuide|itemGuide|tagV2|mtbFeeds|mtbSell|mtbHome|tobuyQuery|tobuyInitiative|glbV2|ignoreImageEditor|textSameSpu"
+        }
+    },
+    "ret": [
+        "SUCCESS::调用成功"
+    ],
+    "v": "1.0"
+}

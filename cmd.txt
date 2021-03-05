@@ -1,0 +1,7 @@
+adb connect 192.168.1.8:5555
+adb shell
+/data/local/tmp/frida-server
+
+
+mitmweb -s /Users/weiweixing/OneDrive\ -\ zju.edu.cn/github/new_idlefish_detection.air/tools/抓包工具/py/save_idle_fish_info.py
+

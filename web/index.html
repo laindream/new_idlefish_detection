@@ -1,7 +1,22 @@
+<html lang="zh">
 
-<script src="./js/vue.js"></script>
-<script src="./js/jquery-3.5.1.js"></script>
-<script src="./js/qrcode.js"></script>
+
+<head>
+    <meta http-equiv="Content-Security-Policy" content="connect-src https: http: ws:">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta crossorigin="anonymous"/>
+    <meta http-equiv="Content-Security-Policy" content="connect-src https: http: ws:">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <script src="./js/vue.js" crossorigin="anonymous"></script>
+    <script src="./js/jquery-3.5.1.js" crossorigin="anonymous"></script>
+    <script src="./js/qrcode.js"></script>
+
+</head>
+
+
+
+
 <style>
 
 .line{
@@ -19,34 +34,45 @@ table {
     width: 100%;
 }
 
+.title {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; //文本不换行，这样超出一行的部分被截取，显示...
+}
+
 th {
     text-align:left;
 }
 </style>
 
 
+<body>
 
     <div id="app">
+
+        
+
         {{ message }}
         <button type="button" @click="prevPage">上一页</button>第{{page_num}}页 <button type="button" @click="nextPage">下一页</button>
         <table v-for="fish in fish_list" border="1">
 
             <tr>
                 <td><button type="button">屏蔽</button></td>
-                <th colspan="5">{{fish.title}}</th>
+                <th colspan="5" class="title">{{fish.title}}</th>
             </tr>
             <tr>
-                <td style="color:red; width:100px;">价格：{{fish.price}}</td> 
+                <td style="color:red; width:100px;"> ¥{{fish.price}}</td> 
                 <td><button type="button" v-bind:nickname="fish.nickname" v-on:click="blockNickname">屏蔽</button> &nbsp;{{fish.nickname}} </td>
-                <td><button type="button">屏蔽</button> &nbsp;{{fish.user_id}} </td>
-                <td>{{fish.time}}</td>
+                <td><button type="button">屏蔽</button> &nbsp;</td>
+                <td>{{fish.time_str}}</td>
             </tr>
             <tr>
-                <td><a v-bind:href="fish.fish_url"><img v-bind:src="fish.img_name" width="80px;"></a></td>
-                <th colspan="5" style="white-space: pre-line;">{{fish.detail}}</td>
+                <td><a v-bind:href="fish.fish_url"><img v-bind:src="fish.pic_url" width="80px;"></a></td>
+                <th colspan="5" style="white-space: pre-line;">{{fish.desc}}</td>
                 <td style="width:100px;">
-                    <div v-bind:id="fish.url_id" ></div>
-                    <button type="button" v-bind:href="fish.fish_url" v-on:click="showQRCode" v-bind:url_id="fish.url_id">显示二维码</button>
+                    <div v-bind:id="fish.item_id" ></div>
+                    <button type="button" v-bind:href="fish.fish_url" v-on:click="showQRCode" v-bind:url_id="fish.item_id">显示二维码</button>
                 </td>
             </tr>
             <tr><th colspan="5">&nbsp;</th></tr>
@@ -55,7 +81,7 @@ th {
 
         <button type="button" @click="prevPage">上一页</button>第{{page_num}}页 <button type="button" @click="nextPage">下一页</button>
     </div>
-
+</body>
 
 
 <script>
@@ -67,12 +93,12 @@ fish_detail = {
     "title": "￼6p 指纹坏了，其他全好，特别新，用起来舒服，屏幕大，喜欢的 私聊",
     "price": 580,
     "wanted": 1,
-    "location": "12345",
+    "area": "12345",
     "nickname": "爱你一身??",
-    "detail": "6p 指纹坏了，其他全好，特别新，用起来舒服，屏幕大，喜欢的私聊\n#含充电线",
-    "url_id": "http://634736113709.com",
-    "user_id": " dengqinpoa",
-    "img_name": "img/1.png",
+    "desc": "6p 指纹坏了，其他全好，特别新，用起来舒服，屏幕大，喜欢的私聊\n#含充电线",
+    "item_id": "http://634736113709.com",
+    "unique_name": " dengqinpoa",
+    "pic_url": "img/1.png",
     "tag": ["iphone"]
 }
 
@@ -152,19 +178,13 @@ var app = new Vue({
                         fish_list.pop();
                     }
                     for(i = 0; i < obj.length; i++){
-                        obj[i].img_name = 'img/' + obj[i].img_name 
-                        if(obj[i].detail.indexOf('\n') > -1){
+                        //if(obj[i].desc.indexOf('\n') > -1){
                             //obj[i].detail = "<p>" + obj[i].detail.replace('\n', '</p><p>') + "</p>"
-                        }
+                        //}
+                        if(typeof(obj[i].desc) == 'undefined'){obj[i].desc = obj[i].title}
                         
                         //obj[i].url_id = "https://market.m.taobao.com/app/idleFish-F2e/widle-taobao-rax/page-detail?&id=" + obj[i].url_id 
-                        obj[i].fish_url = "https://market.m.taobao.com/app/idleFish-F2e/widle-taobao-rax/page-detail?&id=" + obj[i].url_id 
-                        //Fish-2021-01-30-182509-6513885.png
-                        var img_name = obj[i].img_name.substr(4, 24)
-                        var hour = img_name.substr(16, 2)
-                        var minute = img_name.substr(18, 2)
-                        var second = img_name.substr(20, 2)
-                        obj[i].time = img_name.substr(5, 10) + " " + hour + ":" + minute + ":" + second
+                        obj[i].fish_url = "https://market.m.taobao.com/app/idleFish-F2e/widle-taobao-rax/page-detail?&id=" + obj[i].item_id 
                         fish_list.push(obj[i])
                     }
                     
@@ -187,3 +207,6 @@ var app = new Vue({
 
 
 </script>
+
+
+</html>

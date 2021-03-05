@@ -2,24 +2,37 @@
 from flask import Flask, send_from_directory, jsonify
 from flask import render_template
 from flask import request
+from flask_cors import *
 import pymongo
 import json
 
 
 app = Flask(__name__)
 
+CORS(app, supports_credentials=True)
+
 mongoClient = pymongo.MongoClient('mongodb://localhost:27017')
 mydb = mongoClient['idle_fish']
 fish_list = mydb['fish']
+db_items = mydb['items']
 block_nickname = mydb['block_nickname']
 block_user_id = mydb['block_user_id']
 block_fish = mydb['block_fish']
+
 
 page_size = 20
 
 # block_nickname.ensure_index()
 block_nickname.ensure_index([("nickname", pymongo.DESCENDING)], unique = True)
 # block_nickname.insert_one({'nickname':'ddddddddddddddddddddd'})
+
+
+# @app.after_request
+# def cors(environ):
+#     environ.headers['Access-Control-Allow-Origin']='*'
+#     environ.headers['Access-Control-Allow-Method']='*'
+#     environ.headers['Access-Control-Allow-Headers']='x-requested-with,content-type'
+#     return environ
 
 
 @app.route('/')
@@ -40,7 +53,8 @@ def get_new_idlefish():
     block_nickname_list = [i['nickname'] for i in res]
     #print(block_nickname_list)
     filter = {'nickname':{'$nin':block_nickname_list}}
-    res = fish_list.find( filter,{'_id':0}).sort([('img_name',-1)]).skip(page_size * page_num).limit(page_size)
+    #res = fish_list.find( filter,{'_id':0}).sort([('img_name',-1)]).skip(page_size * page_num).limit(page_size)
+    res = db_items.find( filter,{'_id':0}).sort([('time',-1)]).skip(page_size * page_num).limit(page_size)
     #print([i for i in res])
     return json.dumps([i for i in res])
 
@@ -52,6 +66,10 @@ def send_js(path):
 @app.route('/img/<path:path>')
 def send_img(path):
     return send_from_directory('../img', path)
+
+@app.route('/<path:path>')
+def send_file(path):
+    return send_from_directory('./', path)
 
 @app.route('/api/set_block_nickname/<nickname>')
 def setBlockNickname(nickname = None):
