@@ -63,6 +63,7 @@ th {
             </tr>
             <tr>
                 <td style="color:red; width:100px;"> ¥{{fish.price}}</td> 
+                <td><font color="orange">★&nbsp;</font>{{fish.want}}</td>S
                 <td><button type="button" v-bind:nickname="fish.nickname" v-on:click="blockNickname">屏蔽</button> &nbsp;{{fish.nickname}} </td>
                 <td><button type="button">屏蔽</button> &nbsp;</td>
                 <td>{{fish.time_str}}</td>
